@@ -1,0 +1,4 @@
+wheel>=0.22
+numpy
+factor_analyzer
+graspologic
