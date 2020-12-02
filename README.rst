@@ -14,5 +14,6 @@ Implements algorithms from 'A New Basis for Sparse PCA'.
 Features
 --------
 
-* TODO
+* A sparse PCA (principal component analysis) algorithm
+* A sparse matrix approximation algorithm
 
