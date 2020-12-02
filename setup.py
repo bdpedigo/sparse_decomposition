@@ -18,7 +18,7 @@ doclink = """
 Documentation
 -------------
 
-The full documentation is at http://sparse_decomposition.rtfd.org."""
+The full documentation is at https://https://sparse-decomposition.readthedocs.io/en/latest/."""
 history = open("HISTORY.rst").read().replace(".. :changelog:", "")
 
 setup(
