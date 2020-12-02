@@ -173,7 +173,7 @@ html_static_path = ["_static"]
 # html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = "sparse_matrix_analysisdoc"
+htmlhelp_basename = "sparse_decomposition_doc"
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -193,7 +193,7 @@ latex_documents = [
     (
         "index",
         "sparse_matrix_analysis.tex",
-        u"Sparse Matrix Analysis Documentation",
+        u"Sparse Decomposition Documentation",
         u"Benjamin Pedigo",
         "manual",
     ),
@@ -227,8 +227,8 @@ latex_documents = [
 man_pages = [
     (
         "index",
-        "sparse_matrix_analysis",
-        u"Sparse Matrix Analysis Documentation",
+        "sparse_decomposition",
+        u"Sparse Decomposition Documentation",
         [u"Benjamin Pedigo"],
         1,
     )
@@ -246,11 +246,11 @@ man_pages = [
 texinfo_documents = [
     (
         "index",
-        "sparse_matrix_analysis",
-        u"Sparse Matrix Analysis Documentation",
+        "sparse_decomposition",
+        u"Sparse Decomposition Documentation",
         u"Benjamin Pedigo",
-        "sparse_matrix_analysis",
-        "One line description of project.",
+        "sparse_decompositioni",
+        "Algorithms for sparse PCA and sparse matrix approximation from 'A New Basis for Sparse PCA'.",
         "Miscellaneous",
     ),
 ]

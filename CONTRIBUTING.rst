@@ -13,7 +13,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://github.com/bdpedigo/sparse_matrix_analysis/issues.
+Report bugs at https://github.com/bdpedigo/sparse_decomposition/issues.
 
 If you are reporting a bug, please include:
 
@@ -36,14 +36,14 @@ is open to whoever wants to implement it.
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
-Sparse Matrix Analysis could always use more documentation, whether as part of the 
-official Sparse Matrix Analysis docs, in docstrings, or even on the web in blog posts,
+sparse_decomposition could always use more documentation, whether as part of the 
+official sparse_decomposition docs, in docstrings, or even on the web in blog posts,
 articles, and such.
 
 Submit Feedback
 ~~~~~~~~~~~~~~~
 
-The best way to send feedback is to file an issue at https://github.com/bdpedigo/sparse_matrix_analysis/issues.
+The best way to send feedback is to file an issue at https://github.com/bdpedigo/sparse_decomposition/issues.
 
 If you are proposing a feature:
 
@@ -55,13 +55,13 @@ If you are proposing a feature:
 Get Started!
 ------------
 
-Ready to contribute? Here's how to set up `sparse_matrix_analysis` for
+Ready to contribute? Here's how to set up `sparse_decomposition` for
 local development.
 
-1. Fork_ the `sparse_matrix_analysis` repo on GitHub.
+1. Fork_ the `sparse_decomposition` repo on GitHub.
 2. Clone your fork locally::
 
-    $ git clone git@github.com:your_name_here/sparse_matrix_analysis.git
+    $ git clone git@github.com:your_name_here/sparse_decomposition.git
 
 3. Create a branch for local development::
 
@@ -84,7 +84,7 @@ To get tox, just pip install it.
 
 6. Submit a pull request through the GitHub website.
 
-.. _Fork: https://github.com/bdpedigo/sparse_matrix_analysis/fork
+.. _Fork: https://github.com/bdpedigo/sparse_decomposition/fork
 
 Pull Request Guidelines
 -----------------------
@@ -96,7 +96,7 @@ Before you submit a pull request, check that it meets these guidelines:
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
 3. The pull request should work for Python 2.6, 2.7, and 3.3, and for PyPy.
-   Check https://travis-ci.org/bdpedigo/sparse_matrix_analysis 
+   Check https://travis-ci.org/bdpedigo/sparse_decomposition 
    under pull requests for active pull requests or run the ``tox`` command and
    make sure that the tests pass for all supported Python versions.
 
@@ -106,4 +106,4 @@ Tips
 
 To run a subset of tests::
 
-	 $ py.test test/test_sparse_matrix_analysis.py
+	 $ py.test test/test_sparse_decomposition.py
