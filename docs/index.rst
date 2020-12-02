@@ -21,8 +21,5 @@ Contents:
 Feedback
 ========
 
-If you have any suggestions or questions about **Sparse Decomposition** feel free to email me
-at benjamindpedigo@gmail.com.
-
 If you encounter any errors or problems with **Sparse Decomposition**, please let me know!
 Open an Issue at the GitHub http://github.com/bdpedigo/sparse_decomposition main repository.
