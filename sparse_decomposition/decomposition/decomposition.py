@@ -50,6 +50,25 @@ class BaseSparseDecomposition(BaseEstimator):
         tol=1e-5,
         verbose=0,
     ):
+        """[summary]
+
+        Parameters
+        ----------
+        n_components : int, optional
+            [description], by default 2
+        gamma : [type], optional
+            [description], by default None
+        max_iter : int, optional
+            [description], by default 10
+        scale : bool, optional
+            [description], by default False
+        center : bool, optional
+            [description], by default False
+        tol : [type], optional
+            [description], by default 1e-5
+        verbose : int, optional
+            [description], by default 0
+        """
         self.n_components = n_components
         self.gamma = gamma
         self.max_iter = max_iter
@@ -82,6 +101,20 @@ class BaseSparseDecomposition(BaseEstimator):
     # TODO better convergence criteria
 
     def fit_transform(self, X, y=None):
+        """[summary]
+
+        Parameters
+        ----------
+        X : [type]
+            [description]
+        y : [type], optional
+            [description], by default None
+
+        Returns
+        -------
+        [type]
+            [description]
+        """
         self._validate_parameters(X)
 
         self._validate_data(X, copy=True, ensure_2d=True)  # from sklearn BaseEstimator
