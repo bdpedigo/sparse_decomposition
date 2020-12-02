@@ -24,7 +24,7 @@ clean-pyc:
 	find . -name '*~' -exec rm -f {} +
 
 lint:
-	flake8 sparse_matrix_analysis test
+	flake8 sparse_decomposition test
 
 test:
 	py.test
@@ -33,15 +33,15 @@ test-all:
 	tox
 
 coverage:
-	coverage run --source sparse_matrix_analysis setup.py test
+	coverage run --source sparse_decomposition setup.py test
 	coverage report -m
 	coverage html
 	open htmlcov/index.html
 
 docs:
-	rm -f docs/sparse_matrix_analysis.rst
+	rm -f docs/sparse_decomposition.rst
 	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ sparse_matrix_analysis
+	sphinx-apidoc -o docs/ sparse_decomposition
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	open docs/_build/html/index.html

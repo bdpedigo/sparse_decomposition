@@ -192,7 +192,7 @@ latex_elements = {
 latex_documents = [
     (
         "index",
-        "sparse_matrix_analysis.tex",
+        "sparse_decomposition.tex",
         u"Sparse Decomposition Documentation",
         u"Benjamin Pedigo",
         "manual",
