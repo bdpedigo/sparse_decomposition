@@ -1,4 +1,4 @@
-from .sparse_matrix_analysis import (
+from .decomposition import (
     SparseComponentAnalysis,
     SparseMatrixApproximation,
 )
