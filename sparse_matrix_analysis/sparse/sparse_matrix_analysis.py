@@ -11,7 +11,7 @@ from sklearn.utils import check_array
 
 from graspologic.embed import selectSVD
 
-from ..utils import soft_threshold
+from ..utils import soft_threshold, calculate_explained_variance_ratio
 
 
 def _varimax(X):
@@ -86,6 +86,7 @@ class BaseSparseDecomposition(BaseEstimator, TransformerMixin):
         reorder_components=True,
         scale=False,
         center=False,
+        tol=1e-4,
     ):
         self.n_components = n_components
         self.gamma = gamma
@@ -93,6 +94,7 @@ class BaseSparseDecomposition(BaseEstimator, TransformerMixin):
         self.reorder_components = reorder_components
         self.scale = scale
         self.center = center
+        self.tol = tol
 
     def _initialize(self, X):
         U, D, Vt = selectSVD(X, n_components=self.n_components)
@@ -120,11 +122,27 @@ class BaseSparseDecomposition(BaseEstimator, TransformerMixin):
 
         Z_hat, Y_hat = self._initialize(X)
 
+        self._Z_diff_norms_ = []
+        self._Y_diff_norms_ = []
+        Z_diff_norm = np.inf
+        Y_diff_norm = np.inf
+
         # main loop
         i = 0
-        while i < self.max_iter:  # TODO other stopping criteria
-            Z_hat, Y_hat = self._update_estimates(X, Z_hat, Y_hat)
+        while (i < self.max_iter) and (max(Z_diff_norm, Y_diff_norm) > self.tol):
+            Z_hat_new, Y_hat_new = self._update_estimates(X, Z_hat, Y_hat)
+
+            Z_diff_norm = np.linalg.norm(Z_hat_new - Z_hat)
+            Y_diff_norm = np.linalg.norm(Y_hat_new - Y_hat)
+            self._Z_diff_norms_.append(Z_diff_norm)
+            self._Y_diff_norms_.append(Y_diff_norm)
+
+            Z_hat = Z_hat_new
+            Y_hat = Y_hat_new
+
             i += 1
+
+        self.n_iter_ = i
 
         if self.reorder_components:
             Z_hat, Y_hat = _reorder_components(X, Z_hat, Y_hat)
@@ -135,7 +153,8 @@ class BaseSparseDecomposition(BaseEstimator, TransformerMixin):
 
     def _save_attributes(self, X, Z_hat, Y_hat):
         self.components_ = Y_hat.T
-        # TODO compute PVE
+        # TODO this should not be cumulative
+        self.explained_variance_ratio_ = calculate_explained_variance_ratio(X, Y_hat)
 
     def fit(self, X):
         self.fit_transform(X)

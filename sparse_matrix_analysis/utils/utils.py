@@ -29,3 +29,21 @@ def soft_threshold(X, gamma=None, eps=1e-11):
             upper = mid
     X_thresh = threshold_array(X, mid)
     return X_thresh
+
+
+def proportion_variance_explained(X, Y, center=False):
+    if center:
+        X = X.copy()
+        X -= X.mean(axis=0)[None, :]
+    return (np.linalg.norm(X @ Y @ np.linalg.inv(Y.T @ Y) @ Y.T, ord="fro") ** 2) / (
+        np.linalg.norm(X, ord="fro") ** 2
+    )
+
+
+def calculate_explained_variance_ratio(X, Y, center=False):
+    n_components = Y.shape[1]
+    explained_variance_ratio = []
+    for i in range(1, n_components + 1):
+        pve = proportion_variance_explained(X, Y[:, :i])
+        explained_variance_ratio.append(pve)
+    return np.array(explained_variance_ratio)

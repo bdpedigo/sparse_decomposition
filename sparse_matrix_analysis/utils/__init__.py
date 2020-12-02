@@ -1,1 +1,6 @@
-from .utils import threshold_array, soft_threshold, l1_norm
+from .utils import (
+    threshold_array,
+    soft_threshold,
+    l1_norm,
+    calculate_explained_variance_ratio,
+)
