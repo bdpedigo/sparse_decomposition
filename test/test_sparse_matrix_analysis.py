@@ -1,12 +1,11 @@
 """
-Tests for `sparse_matrix_analysis` module.
+Tests for `sparse_decomposition` module.
 """
 import pytest
-from sparse_matrix_analysis import sparse_matrix_analysis
+from sparse_decomposition import sparse_decomposition
 
 
-class TestSparse_matrix_analysis(object):
-
+class TestSparse_decomposition(object):
     @classmethod
     def setup_class(cls):
         pass

@@ -18,24 +18,24 @@ doclink = """
 Documentation
 -------------
 
-The full documentation is at http://sparse_matrix_analysis.rtfd.org."""
+The full documentation is at http://sparse_decomposition.rtfd.org."""
 history = open("HISTORY.rst").read().replace(".. :changelog:", "")
 
 setup(
-    name="sparse_matrix_analysis",
+    name="sparse_decomposition",
     version="0.1.0",
     description="Implements algorithms from 'A New Basis for Sparse PCA'.",
     long_description=readme + "\n\n" + doclink + "\n\n" + history,
     author="Benjamin Pedigo",
     author_email="benjamindpedigo@gmail.com",
-    url="https://github.com/bdpedigo/sparse_matrix_analysis",
-    packages=["sparse_matrix_analysis",],
-    package_dir={"sparse_matrix_analysis": "sparse_matrix_analysis"},
+    url="https://github.com/bdpedigo/sparse_decomposition",
+    packages=["sparse_decomposition",],
+    package_dir={"sparse_decomposition": "sparse_decomposition"},
     include_package_data=True,
     install_requires=[],
     license="MIT",
     zip_safe=False,
-    keywords="sparse_matrix_analysis",
+    keywords="sparse_decomposition",
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Developers",

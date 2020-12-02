@@ -1,17 +1,18 @@
 # Some of the implementation inspired by:
 # REF: https://github.com/fchen365/epca
 
+import time
 from abc import abstractmethod
 
 import numpy as np
 from factor_analyzer import Rotator
-from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.base import BaseEstimator
 from sklearn.preprocessing import StandardScaler
 from sklearn.utils import check_array
 
 from graspologic.embed import selectSVD
 
-from ..utils import soft_threshold, calculate_explained_variance_ratio
+from ..utils import calculate_explained_variance_ratio, soft_threshold
 
 
 def _varimax(X):
@@ -25,7 +26,8 @@ def _polar(X):
 
 
 def _polar_rotate_shrink(X, gamma=0.1):
-    U, D, Vt = selectSVD(X, n_components=X.shape[1], algorithm="full")
+    # Algorithm 1 from the paper
+    U, _, _ = selectSVD(X, n_components=X.shape[1], algorithm="full")
     U_rot = _varimax(U)
     U_thresh = soft_threshold(U_rot, gamma)
     return U_thresh
@@ -37,72 +39,33 @@ def _reorder_components(X, Z_hat, Y_hat):
     return Z_hat[:, sort_inds], Y_hat[:, sort_inds]
 
 
-def sparse_component_analysis(
-    X,
-    n_components=2,
-    gamma=None,
-    max_iter=10,
-    reorder_components=True,
-    scale=False,
-    center=False,
-):
-    # TODO standard scaler
-    # TODO center
-    X = X.copy()
-    if scale or center:
-        X = StandardScaler(with_mean=center, with_std=scale).fit_transform(X)
-    U, D, Vt = selectSVD(X, n_components=n_components)
-    if gamma is None:
-        gamma = np.sqrt(U.shape[1] * X.shape[1])
-    Z_hat = U
-    Y_hat = Vt.T
-    i = 0
-    while i < max_iter:
-        Y_hat = _polar_rotate_shrink(X.T @ Z_hat, gamma=gamma)
-        Z_hat = _polar(X @ Y_hat)
-        i += 1
-    if reorder_components:
-        Z_hat, Y_hat = _reorder_components(X, Z_hat, Y_hat)
-    return Z_hat, Y_hat
-
-
-# def sparse_matrix_approximation(
-#     X,
-#     n_components=2,
-#     gamma=None,
-#     max_iter=10,
-#     reorder_components=True,
-#     scale=False,
-#     center=False,
-# ):
-
-
-class BaseSparseDecomposition(BaseEstimator, TransformerMixin):
+class BaseSparseDecomposition(BaseEstimator):
     def __init__(
         self,
         n_components=2,
         gamma=None,
         max_iter=10,
-        reorder_components=True,
         scale=False,
         center=False,
-        tol=1e-4,
+        tol=1e-5,
+        verbose=0,
     ):
         self.n_components = n_components
         self.gamma = gamma
         self.max_iter = max_iter
-        self.reorder_components = reorder_components
         self.scale = scale
         self.center = center
         self.tol = tol
+        self.verbose = verbose
+        # TODO add random state
 
     def _initialize(self, X):
         U, D, Vt = selectSVD(X, n_components=self.n_components)
-        return U, Vt.T
+        score = np.linalg.norm(D)
+        return U, Vt.T, score
 
     def _validate_parameters(self, X):
         if not self.gamma:
-            # TODO not sure if this should be shape[1] or shape[0]
             gamma = np.sqrt(self.n_components * X.shape[1])
         else:
             gamma = self.gamma
@@ -115,46 +78,70 @@ class BaseSparseDecomposition(BaseEstimator, TransformerMixin):
             ).fit_transform(X)
         return X
 
+    # def _compute_matrix_difference(X, metric='max'):
+    # TODO better convergence criteria
+
     def fit_transform(self, X, y=None):
         self._validate_parameters(X)
 
-        self._validate_data(X, copy=True, ensure_2d=True)
+        self._validate_data(X, copy=True, ensure_2d=True)  # from sklearn BaseEstimator
 
-        Z_hat, Y_hat = self._initialize(X)
+        Z_hat, Y_hat, score = self._initialize(X)
 
-        self._Z_diff_norms_ = []
-        self._Y_diff_norms_ = []
-        Z_diff_norm = np.inf
-        Y_diff_norm = np.inf
+        # for keeping track of progress over iteration
+        Z_diff = np.inf
+        Y_diff = np.inf
+        norm_score_diff = np.inf
+        last_score = 0
 
         # main loop
         i = 0
-        while (i < self.max_iter) and (max(Z_diff_norm, Y_diff_norm) > self.tol):
+        while (i < self.max_iter) and (norm_score_diff > self.tol):
+            if self.verbose > 0:
+                print(f"Iteration: {i}")
+
+            currtime = time.time()
+
             Z_hat_new, Y_hat_new = self._update_estimates(X, Z_hat, Y_hat)
 
-            Z_diff_norm = np.linalg.norm(Z_hat_new - Z_hat)
-            Y_diff_norm = np.linalg.norm(Y_hat_new - Y_hat)
-            self._Z_diff_norms_.append(Z_diff_norm)
-            self._Y_diff_norms_.append(Y_diff_norm)
+            Z_hat_new, Y_hat_new = _reorder_components(X, Z_hat_new, Y_hat_new)
+            Z_diff = np.linalg.norm(Z_hat_new - Z_hat)
+            Y_diff = np.linalg.norm(Y_hat_new - Y_hat)
+            norm_Z_diff = Z_diff / np.linalg.norm(Z_hat_new)
+            norm_Y_diff = Y_diff / np.linalg.norm(Y_hat_new)
 
             Z_hat = Z_hat_new
             Y_hat = Y_hat_new
 
+            B_hat = Z_hat.T @ X @ Y_hat
+            score = np.linalg.norm(B_hat)
+            norm_score_diff = np.abs(score - last_score) / score
+            last_score = score
+
+            if self.verbose > 1:
+                print(f"{time.time() - currtime:.3f} seconds elapsed for iteration.")
+
+            if self.verbose > 0:
+                print(f"Difference in Z_hat: {Z_diff}")
+                print(f"Difference in Y_hat: {Z_diff}")
+                print(f"Normalized difference in Z_hat: {norm_Z_diff}")
+                print(f"Normalized difference in Y_hat: {norm_Y_diff}")
+                print(f"Total score: {score}")
+                print(f"Normalized difference in score: {norm_score_diff}")
+                print()
+
             i += 1
 
+        Z_hat, Y_hat = _reorder_components(X, Z_hat, Y_hat)
+
+        # save attributes
         self.n_iter_ = i
-
-        if self.reorder_components:
-            Z_hat, Y_hat = _reorder_components(X, Z_hat, Y_hat)
-
-        self._save_attributes(X, Z_hat, Y_hat)
+        self.components_ = Y_hat.T
+        # TODO this should not be cumulative by the sklearn definition
+        self.explained_variance_ratio_ = calculate_explained_variance_ratio(X, Y_hat)
+        self.score_ = score
 
         return Z_hat
-
-    def _save_attributes(self, X, Z_hat, Y_hat):
-        self.components_ = Y_hat.T
-        # TODO this should not be cumulative
-        self.explained_variance_ratio_ = calculate_explained_variance_ratio(X, Y_hat)
 
     def fit(self, X):
         self.fit_transform(X)
@@ -184,7 +171,6 @@ class SparseMatrixApproximation(BaseSparseDecomposition):
 
     def _save_attributes(self, X, Z_hat, Y_hat):
         B = Z_hat.T @ X @ Y_hat
-        self.scores_ = B
+        self.score_ = B
         self.right_latent_ = Y_hat
         self.left_latent_ = Z_hat
-
