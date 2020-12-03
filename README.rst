@@ -10,6 +10,9 @@ Sparse Decomposition
 
 Implements algorithms from 'A New Basis for Sparse PCA'.
 
+Note
+----
+- Implementations are a work in progress
 
 Features
 --------
