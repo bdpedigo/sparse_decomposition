@@ -10,6 +10,11 @@ Sparse Decomposition
 
 Implements algorithms from 'A New Basis for Sparse PCA'.
 
+- `Documentation <https://sparse-decomposition.readthedocs.io/en/latest/>`_
+
+Note
+----
+- Implementations are a work in progress
 
 Features
 --------
