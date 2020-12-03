@@ -1,7 +1,7 @@
 Decomposition
 =============
 
-.. currentmodule:: sparse_decomposition.sparse_decomposition
+.. currentmodule:: sparse_decomposition.decomposition
 
 ..autoclass:: SparseComponentAnalysis
 
