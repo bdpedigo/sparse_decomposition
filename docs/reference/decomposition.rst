@@ -3,6 +3,6 @@ Decomposition
 
 .. currentmodule:: sparse_decomposition.decomposition
 
-..autoclass:: SparseComponentAnalysis
+.. autoclass:: SparseComponentAnalysis
 
-..autoclass:: SparseMatrixApproximation
+.. autoclass:: SparseMatrixApproximation

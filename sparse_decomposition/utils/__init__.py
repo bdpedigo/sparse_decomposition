@@ -3,4 +3,5 @@ from .utils import (
     soft_threshold,
     l1_norm,
     calculate_explained_variance_ratio,
+    proportion_variance_explained,
 )
